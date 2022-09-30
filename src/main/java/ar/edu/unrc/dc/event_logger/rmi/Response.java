@@ -1,11 +1,11 @@
 package ar.edu.unrc.dc.event_logger.rmi;
 
+import java.io.Serializable;
 import java.util.List;
 
 import static ar.edu.unrc.dc.event_logger.rmi.Response.ResponseType.*;
-import static ar.edu.unrc.dc.event_logger.rmi.Response.ResponseType.STOP_SERVER;
 
-public class Response {
+public class Response implements Serializable {
 
     public enum ResponseType {
         EVENT_START_STOP,
@@ -28,7 +28,8 @@ public class Response {
             case EVENT_NAMES:
             case EVENT_QUERY:
             case EVENT_NAME_CHECK:
-            case EVENTS_QUERY: throw new IllegalArgumentException("Response type RT requires associated data".replaceAll("RT", responseType.toString()));
+            case EVENTS_QUERY:
+                throw new IllegalArgumentException("Response type RT requires associated data".replaceAll("RT", responseType.toString()));
         }
         validateRequest(responseType, from);
         simpleTextData = null;
@@ -45,7 +46,8 @@ public class Response {
             case EVENT_NAMES:
             case EVENTS_QUERY:
             case ERROR:
-            case EVENT_QUERY: throw new IllegalArgumentException("Response type RT is not compatible with boolean data".replaceAll("RT", responseType.toString()));
+            case EVENT_QUERY:
+                throw new IllegalArgumentException("Response type RT is not compatible with boolean data".replaceAll("RT", responseType.toString()));
         }
         if (from == null)
             throw new IllegalArgumentException("From request is null");
@@ -59,10 +61,10 @@ public class Response {
 
     private Response(String simpleTextData, ResponseType responseType, Request from) {
         switch (responseType) {
-            case ERROR:
             case EVENT_NAME_CHECK:
             case STOP_SERVER:
-            case EVENT_START_STOP: throw new IllegalArgumentException("Response type RT is not compatible with text data".replaceAll("RT", responseType.toString()));
+            case EVENT_START_STOP:
+                throw new IllegalArgumentException("Response type RT is not compatible with text data".replaceAll("RT", responseType.toString()));
         }
         if (from == null)
             throw new IllegalArgumentException("From request is null");
@@ -80,7 +82,8 @@ public class Response {
             case EVENT_NAME_CHECK:
             case EVENT_QUERY:
             case STOP_SERVER:
-            case EVENT_START_STOP: throw new IllegalArgumentException("Response type RT is not compatible with multiple text data".replaceAll("RT", responseType.toString()));
+            case EVENT_START_STOP:
+                throw new IllegalArgumentException("Response type RT is not compatible with multiple text data".replaceAll("RT", responseType.toString()));
         }
         if (from == null)
             throw new IllegalArgumentException("From request is null");
@@ -101,7 +104,8 @@ public class Response {
                     case LIST_EVENT_NAMES:
                     case QUERY_EVENT_INFO:
                     case QUERY_ALL_EVENTS_INFO:
-                    case STOP_SERVER: incompatibleTypes = true;
+                    case STOP_SERVER:
+                        incompatibleTypes = true;
                 }
                 break;
             }
@@ -191,6 +195,29 @@ public class Response {
 
     public static Response error(String message, Request from) {
         return new Response(message, ERROR, from);
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder("{\n");
+        sb.append("\ttype=").append(responseType.toString()).append(",\n");
+        sb.append("\tsimpleTextData=");
+        if (hasSimpleTextData())
+            sb.append(simpleTextData);
+        else
+            sb.append("N/A");
+        sb.append(",\n");
+        sb.append("\tmultipleTextData=");
+        if (hasMultiTextData()) {
+            sb.append(String.join(",", multipleTextData));
+        } else {
+            sb.append("N/A");
+        }
+        sb.append(",\n");
+        sb.append("\tbooleanData=").append(booleanData).append(",\n");
+        sb.append("\tfrom=\n").append(from.toString()).append("\n");
+        sb.append("}");
+        return sb.toString();
     }
 
 }

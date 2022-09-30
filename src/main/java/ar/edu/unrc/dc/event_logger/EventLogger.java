@@ -28,8 +28,12 @@ public class EventLogger {
         startMainEvent(MAIN_EVENT_DEFAULT_NAME, null);
     }
 
-    public void startMainEvent(String name) {
+    public void startNamedMainEvent(String name) {
         startMainEvent(name, null);
+    }
+
+    public void startMainEventWithData(String data) {
+        startMainEvent(MAIN_EVENT_DEFAULT_NAME, data);
     }
 
     public void startMainEvent(String name, String startingData) {

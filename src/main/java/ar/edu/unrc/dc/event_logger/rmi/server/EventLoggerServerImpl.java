@@ -11,15 +11,18 @@ import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.Optional;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 public class EventLoggerServerImpl implements EventLoggerServer{
 
     private final EventLogger eventLogger = EventLogger.instance();
+    private final Registry registry;
 
-    public EventLoggerServerImpl() {
-        super();
-    }
+    public EventLoggerServerImpl(Registry registry) { super(); this.registry = registry; }
 
     @Override
     public Response executeQuery(Request request) {
@@ -28,7 +31,10 @@ public class EventLoggerServerImpl implements EventLoggerServer{
                 case START_MAIN_EVENT: {
                     if (eventLogger.getMainEvent().isPresent())
                         return Response.error("Main event already exists", request);
-                    eventLogger.startMainEvent(request.name(), request.data());
+                    if (request.hasName())
+                        eventLogger.startMainEvent(request.name(), request.data());
+                    else
+                        eventLogger.startMainEventWithData(request.data());
                     return Response.eventStartedStopped(request);
                 }
                 case START_EVENT:
@@ -79,8 +85,10 @@ public class EventLoggerServerImpl implements EventLoggerServer{
                             request
                     );
                 case STOP_SERVER:
-                    if (!UnicastRemoteObject.unexportObject(this, false))
+                    if (!UnicastRemoteObject.unexportObject(this, true))
                         return Response.error("Couldn't un-export server, maybe try again?",request);
+                    registry.unbind(EventLoggerServer.name);
+                    delayedShutdown();
                     return Response.stopServer(request);
             }
         } catch (Exception | Error exc) {
@@ -91,6 +99,15 @@ public class EventLoggerServerImpl implements EventLoggerServer{
             return Response.error(sStackTrace, request);
         }
         return Response.error("Unknown request", request);
+    }
+
+    private void delayedShutdown() {
+        ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
+        final Runnable task = () -> {
+            System.out.println("Server shutting down");
+            System.exit(0);
+        };
+        scheduler.schedule(task, 5, TimeUnit.SECONDS);
     }
 
     private Response stopEvent(Event event, Request request) {
@@ -106,13 +123,15 @@ public class EventLoggerServerImpl implements EventLoggerServer{
         if (System.getSecurityManager() == null) {
             System.setSecurityManager(new SecurityManager());
         }
+        System.out.println(System.getProperties());
         try {
-            String name = "EventLogger.EventLoggerServer";
-            EventLoggerServer engine = new EventLoggerServerImpl();
-            EventLoggerServer stub = (EventLoggerServer) UnicastRemoteObject.exportObject(engine, 0);
+            String name = EventLoggerServer.name;
             Registry registry = LocateRegistry.getRegistry();
+            EventLoggerServer engine = new EventLoggerServerImpl(registry);
+            EventLoggerServer stub = (EventLoggerServer) UnicastRemoteObject.exportObject(engine, 0);
             registry.rebind(name, stub);
             System.out.println("EventLogger.EventLoggerServer started and bound");
+            System.out.println("Got server handle: " + stub);
         } catch (Exception e) {
             e.printStackTrace();
         }

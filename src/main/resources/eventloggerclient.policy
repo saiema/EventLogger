@@ -1,0 +1,25 @@
+grant codeBase "file:${user.dir}/src/main/java/ar/edu/unrc/dc/-" {
+    permission java.security.AllPermission;
+};
+
+grant codeBase "file:${user.dir}/target/classes/ar/edu/unrc/dc/-" {
+    permission java.security.AllPermission;
+};
+
+grant {
+   permission java.util.PropertyPermission "*", "read";
+   permission java.io.FilePermission "/bin/-", "execute";
+};
+
+grant {
+    permission java.net.SocketPermission "127.0.0.1:*", "connect,resolve";
+};
+
+grant {
+    permission java.io.FilePermission "<<ALL FILES>>", "execute";
+};
+
+grant {
+    permission java.io.FilePermission "${user.dir}/logs", "execute, read, write";
+    permission java.io.FilePermission "${user.dir}/logs/-", "execute, read, write";
+};

@@ -1,8 +1,10 @@
 package ar.edu.unrc.dc.event_logger.rmi;
 
+import java.io.Serializable;
+
 import static ar.edu.unrc.dc.event_logger.rmi.Request.RequestType.*;
 
-public class Request {
+public class Request implements Serializable {
 
     public enum RequestType {
         START_MAIN_EVENT,
@@ -109,6 +111,27 @@ public class Request {
 
     public static Request stopServer() {
         return new Request(null, null, STOP_SERVER);
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder("{\n");
+        sb.append("\ttype=").append(requestType.toString()).append(",\n");
+        sb.append("\tname=");
+        if (hasName())
+            sb.append(name);
+        else
+            sb.append("N/A");
+        sb.append(",\n");
+        sb.append("\tdata=");
+        if (hasData()) {
+            sb.append(data);
+        } else {
+            sb.append("N/A");
+        }
+        sb.append("\n");
+        sb.append("}");
+        return sb.toString();
     }
 
 }
