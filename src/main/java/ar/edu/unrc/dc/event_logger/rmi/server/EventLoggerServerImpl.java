@@ -2,6 +2,7 @@ package ar.edu.unrc.dc.event_logger.rmi.server;
 
 import ar.edu.unrc.dc.event_logger.Event;
 import ar.edu.unrc.dc.event_logger.EventLogger;
+import ar.edu.unrc.dc.event_logger.properties.EventLoggerProperties;
 import ar.edu.unrc.dc.event_logger.rmi.Request;
 import ar.edu.unrc.dc.event_logger.rmi.Response;
 
@@ -19,6 +20,7 @@ import java.util.stream.Collectors;
 
 public class EventLoggerServerImpl implements EventLoggerServer{
 
+    public static final String VERSION = "1.0.0";
     private final EventLogger eventLogger = EventLogger.instance();
     private final Registry registry;
 
@@ -126,9 +128,9 @@ public class EventLoggerServerImpl implements EventLoggerServer{
         System.out.println(System.getProperties());
         try {
             String name = EventLoggerServer.name;
-            Registry registry = LocateRegistry.getRegistry();
+            Registry registry = java.rmi.registry.LocateRegistry.createRegistry(EventLoggerProperties.registryPort());
             EventLoggerServer engine = new EventLoggerServerImpl(registry);
-            EventLoggerServer stub = (EventLoggerServer) UnicastRemoteObject.exportObject(engine, 0);
+            EventLoggerServer stub = (EventLoggerServer) UnicastRemoteObject.exportObject(engine, EventLoggerProperties.port());
             registry.rebind(name, stub);
             System.out.println("EventLogger.EventLoggerServer started and bound");
             System.out.println("Got server handle: " + stub);

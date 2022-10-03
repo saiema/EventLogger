@@ -1,8 +1,10 @@
 package ar.edu.unrc.dc.event_logger.rmi.client;
 
+import ar.edu.unrc.dc.event_logger.properties.EventLoggerProperties;
 import ar.edu.unrc.dc.event_logger.rmi.Request;
 import ar.edu.unrc.dc.event_logger.rmi.Response;
 import ar.edu.unrc.dc.event_logger.rmi.server.EventLoggerServer;
+import ar.edu.unrc.dc.event_logger.rmi.server.EventLoggerServerImpl;
 
 import java.io.File;
 import java.io.IOException;
@@ -17,11 +19,13 @@ import java.rmi.registry.Registry;
 
 public class EventLoggerClient {
 
+    public static final String VERSION = "1.0.0";
+
     private final EventLoggerServer eventLoggerServer;
     private static EventLoggerClient instance;
     public static EventLoggerClient instance() {
         if (instance == null)
-            instance = new EventLoggerClient("127.0.0.1");
+            instance = new EventLoggerClient(EventLoggerProperties.serverURL());
         return instance;
     }
 
@@ -61,9 +65,7 @@ public class EventLoggerClient {
             System.out.println("No server found, will try to start server and retry ...");
             startServer();
             try {
-                int LOOKUP_RETRIES = 3;
-                long LOOKUP_RETRIES_DELAY = 2;
-                eventLoggerServer = retryLookup(registry, LOOKUP_RETRIES, LOOKUP_RETRIES_DELAY);
+                eventLoggerServer = retryLookup(registry, EventLoggerProperties.connectionRetries(), EventLoggerProperties.reconnectionDelay());
             } catch (InterruptedException ex) {
                 throw new RuntimeException(ex);
             }
@@ -76,6 +78,7 @@ public class EventLoggerClient {
         do {
             try {
                 eventLoggerServer = lookupServer(registry);
+                return eventLoggerServer;
             } catch (NotBoundException e) {
                 if (retries == 0)
                     throw new RuntimeException(e);
@@ -83,7 +86,7 @@ public class EventLoggerClient {
                 wait(delaySeconds*1000);
             }
         } while (retries-- >= 0);
-        return eventLoggerServer;
+        return null; //should never reach this statement
     }
 
     private EventLoggerServer lookupServer(Registry registry) throws NotBoundException, RemoteException {
@@ -107,15 +110,19 @@ public class EventLoggerClient {
         }
     }
 
-    private static final String SERVER_CLASS = "ar.edu.unrc.dc.event_logger.rmi.server.EventLoggerServerImpl";
     private String[] getServerArguments() {
-        return new String[] {
-                "java",
-                "-cp",
-                System.getProperty("java.class.path"),
-                "-Djava.security.policy=target/classes/eventloggerserver.policy",
-                SERVER_CLASS
-        };
+        String[] properties = EventLoggerProperties.asArgs();
+        String[] args = new String[properties.length + 5];
+        args[0] = "java";
+        args[1] = "-cp";
+        args[2] = System.getProperty("java.class.path");
+        args[3] = "-Djava.security.policy=target/classes/eventloggerserver.policy";
+        int idx = 4;
+        for (String property : properties) {
+            args[idx++] = property;
+        }
+        args[args.length - 1] = EventLoggerServerImpl.class.getCanonicalName();
+        return args;
     }
 
 }

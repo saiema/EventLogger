@@ -9,6 +9,7 @@ import java.rmi.RemoteException;
 public interface EventLoggerServer extends Remote {
 
     String name = "EventLogger.EventLoggerServer";
+    String VERSION = "1.0.0";
 
     Response executeQuery(Request request) throws RemoteException;
 

@@ -8,13 +8,50 @@ import static ar.edu.unrc.dc.event_logger.rmi.Response.ResponseType.*;
 public class Response implements Serializable {
 
     public enum ResponseType {
-        EVENT_START_STOP,
-        EVENT_QUERY,
-        EVENTS_QUERY,
-        EVENT_NAME_CHECK,
-        EVENT_NAMES,
-        STOP_SERVER,
-        ERROR
+        EVENT_START_STOP {
+            @Override
+            public String getDescription() {
+                return "Start or stop an event with or without associated data";
+            }
+        },
+        EVENT_QUERY {
+            @Override
+            public String getDescription() {
+                return "Query the server the information of an event with a given name (it should be checked beforehand if an event with that name exists)";
+            }
+        },
+        EVENTS_QUERY {
+            @Override
+            public String getDescription() {
+                return "Query the server the information of all current events";
+            }
+        },
+        EVENT_NAME_CHECK {
+            @Override
+            public String getDescription() {
+                return "Query the server if an event with a specific name exists";
+            }
+        },
+        EVENT_NAMES {
+            @Override
+            public String getDescription() {
+                return "Query the server about the names of all current events";
+            }
+        },
+        STOP_SERVER {
+            @Override
+            public String getDescription() {
+                return "Stops the server, this must be done only once, no more queries can be sent to the server after this";
+            }
+        },
+        ERROR {
+            @Override
+            public String getDescription() {
+                return "An error occurred on a particular query";
+            }
+        };
+
+        public abstract String getDescription();
     }
 
     private final String simpleTextData;
