@@ -17,6 +17,12 @@ public class EventLoggerProperties {
     private static final long RMI_CLIENT_CONNECTION_RETRY_DELAY_DEFAULT = 2;
     private static final boolean PROPERTIES_USE_DEFAULT_ON_INVALID_VALUE_DEFAULT = true;
 
+    private static final String RMI_CLIENT_SECURITY_POLICY_DEFAULT = "src/main/resources/eventloggerclient.policy";
+
+    private static final String RMI_SERVER_SECURITY_POLICY_DEFAULT = "src/main/resources/eventloggerserver.policy";
+
+    private static final String MAIN_EVENT_DEFAULT_NAME = "MAIN";
+
     private static boolean properties_use_default_on_invalid_value = Boolean.parseBoolean(
             getPropertyValue(
                     EVENT_LOGGER_PROPERTIES_USE_DEFAULT_ON_INVALID_VALUE,
@@ -98,6 +104,33 @@ public class EventLoggerProperties {
             public String getDescription() {
                 return "Delay in seconds to retry a connection to the server, default value is " + RMI_CLIENT_CONNECTION_RETRY_DELAY_DEFAULT + "s";
             }
+        },
+        EVENT_LOGGER_MAIN_EVENT_DEFAULT_NAME {
+            @Override
+            public String getKey() { return EVENT_LOGGER_PREFIX + ".rmi.server.main_event_default_name"; }
+
+            @Override
+            public String getDescription() {
+                return "The default main event name, default value is " + MAIN_EVENT_DEFAULT_NAME;
+            }
+        },
+        EVENT_LOGGER_RMI_CLIENT_POLICY {
+            @Override
+            public String getKey() { return EVENT_LOGGER_PREFIX + ".rmi.client.policy"; }
+
+            @Override
+            public String getDescription() {
+                return "The policy file to use by the client, default value is " + RMI_CLIENT_SECURITY_POLICY_DEFAULT;
+            }
+        },
+        EVENT_LOGGER_RMI_SERVER_POLICY {
+            @Override
+            public String getKey() { return EVENT_LOGGER_PREFIX + ".rmi.server.policy"; }
+
+            @Override
+            public String getDescription() {
+                return "The policy file to use by the server, default value is " + RMI_SERVER_SECURITY_POLICY_DEFAULT;
+            }
         }
         ;
         public abstract String getKey();
@@ -112,6 +145,21 @@ public class EventLoggerProperties {
     public static String serverURL() {
         String serverURL = getPropertyValue(EVENT_LOGGER_SERVER_URL, RMI_SERVER_URL_DEFAULT);
         return stringPropertyValue(EVENT_LOGGER_SERVER_URL, serverURL, RMI_SERVER_URL_DEFAULT);
+    }
+
+    public static String defaultMainEventName() {
+        String defaultMainEventName = getPropertyValue(EVENT_LOGGER_MAIN_EVENT_DEFAULT_NAME, MAIN_EVENT_DEFAULT_NAME);
+        return stringPropertyValue(EVENT_LOGGER_MAIN_EVENT_DEFAULT_NAME, defaultMainEventName, MAIN_EVENT_DEFAULT_NAME);
+    }
+
+    public static String clientPolicy() {
+        String clientPolicy = getPropertyValue(EVENT_LOGGER_RMI_CLIENT_POLICY, RMI_CLIENT_SECURITY_POLICY_DEFAULT);
+        return stringPropertyValue(EVENT_LOGGER_RMI_CLIENT_POLICY, clientPolicy, RMI_CLIENT_SECURITY_POLICY_DEFAULT);
+    }
+
+    public static String serverPolicy() {
+        String serverPolicy = getPropertyValue(EVENT_LOGGER_RMI_SERVER_POLICY, RMI_SERVER_SECURITY_POLICY_DEFAULT);
+        return stringPropertyValue(EVENT_LOGGER_RMI_SERVER_POLICY, serverPolicy, RMI_SERVER_SECURITY_POLICY_DEFAULT);
     }
 
     public static int port() {
@@ -143,12 +191,12 @@ public class EventLoggerProperties {
     }
 
     public static String[] asArgs() {
-        String[] args = new String[values().length];
+        String[] args = new String[values().length-1];
         int idx = 0;
         for (ConfigKey key : ConfigKey.values()) {
             if (key.equals(EVENT_LOGGER_PROPERTIES_USE_DEFAULT_ON_INVALID_VALUE))
                 continue;
-            args[idx] = "-D" + key.getKey()+"="+getValidPropertyValue(key);
+            args[idx++] = "-D" + key.getKey()+"="+getValidPropertyValue(key);
         }
         return args;
     }

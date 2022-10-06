@@ -41,6 +41,12 @@ public class Event {
         this.associatedStartingData = associatedStartingData;
     }
 
+    public void instantEvent(String associatedStartingData, String associatedEndingData) {
+        instantEvent();
+        this.associatedStartingData = associatedStartingData;
+        this.associatedEndingData = associatedEndingData;
+    }
+
     public void startEvent() {
         if (started) throw new IllegalStateException("Event " + name + " is already started");
         if (isInstantEvent) throw new IllegalStateException("Event " + name + " is an instant event");
