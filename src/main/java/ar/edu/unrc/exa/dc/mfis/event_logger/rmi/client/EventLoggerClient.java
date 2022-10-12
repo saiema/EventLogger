@@ -8,13 +8,11 @@ import ar.edu.unrc.exa.dc.mfis.event_logger.rmi.Request;
 import ar.edu.unrc.exa.dc.mfis.event_logger.rmi.Response;
 import ar.edu.unrc.exa.dc.mfis.event_logger.rmi.server.EventLoggerServer;
 import ar.edu.unrc.exa.dc.mfis.event_logger.rmi.server.EventLoggerServerImpl;
-import com.sun.jndi.toolkit.url.Uri;
 
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
-import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -25,7 +23,6 @@ import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.security.Policy;
 import java.util.Arrays;
-import java.util.Enumeration;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
