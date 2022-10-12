@@ -1,9 +1,9 @@
-package ar.edu.unrc.dc.event_logger.rmi;
+package ar.edu.unrc.exa.dc.mfis.event_logger.rmi;
 
 import java.io.Serializable;
 import java.util.List;
 
-import static ar.edu.unrc.dc.event_logger.rmi.Response.ResponseType.*;
+import static ar.edu.unrc.exa.dc.mfis.event_logger.rmi.Response.ResponseType.*;
 
 public class Response implements Serializable {
 

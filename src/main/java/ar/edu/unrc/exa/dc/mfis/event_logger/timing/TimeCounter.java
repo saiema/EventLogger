@@ -1,4 +1,4 @@
-package ar.edu.unrc.dc.event_logger.timing;
+package ar.edu.unrc.exa.dc.mfis.event_logger.timing;
 
 import java.util.concurrent.TimeUnit;
 

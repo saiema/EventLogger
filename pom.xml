@@ -4,13 +4,14 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>org.example</groupId>
+    <groupId>ar.edu.unrc.exa.dc.mfis</groupId>
     <artifactId>EventLogger</artifactId>
-    <version>1.0-SNAPSHOT</version>
+    <version>${revision}-SNAPSHOT</version>
 
     <properties>
         <maven.compiler.source>8</maven.compiler.source>
         <maven.compiler.target>8</maven.compiler.target>
+        <revision>1.0.0</revision>
     </properties>
 
     <dependencies>
@@ -20,5 +21,36 @@
             <version>4.12</version>
         </dependency>
     </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <version>2.3.1</version>
+                <configuration>
+                    <archive>
+                        <manifest>
+                            <mainClass>ar.edu.unrc.exa.dc.mfis.event_logger.EventLoggerServerMain</mainClass>
+                        </manifest>
+                    </archive>
+                    <excludes>
+                        <exclude>**/*.log</exclude>
+                        <exclude>**/*.java</exclude>
+                        <exclude>**/TestFirstClient.class</exclude>
+                        <exclude>**/TestSecondClient.class</exclude>
+                    </excludes>
+                </configuration>
+            </plugin>
+        </plugins>
+
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+                <targetPath>resources</targetPath>
+            </resource>
+        </resources>
+
+    </build>
 
 </project>

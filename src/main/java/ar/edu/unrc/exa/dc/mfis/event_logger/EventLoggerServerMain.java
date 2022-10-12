@@ -1,10 +1,10 @@
-package ar.edu.unrc.dc.event_logger;
+package ar.edu.unrc.exa.dc.mfis.event_logger;
 
-import ar.edu.unrc.dc.event_logger.properties.EventLoggerProperties;
-import ar.edu.unrc.dc.event_logger.rmi.Response;
-import ar.edu.unrc.dc.event_logger.rmi.client.EventLoggerClient;
-import ar.edu.unrc.dc.event_logger.rmi.server.EventLoggerServer;
-import ar.edu.unrc.dc.event_logger.rmi.server.EventLoggerServerImpl;
+import ar.edu.unrc.exa.dc.mfis.event_logger.properties.EventLoggerProperties;
+import ar.edu.unrc.exa.dc.mfis.event_logger.rmi.Response;
+import ar.edu.unrc.exa.dc.mfis.event_logger.rmi.client.EventLoggerClient;
+import ar.edu.unrc.exa.dc.mfis.event_logger.rmi.server.EventLoggerServer;
+import ar.edu.unrc.exa.dc.mfis.event_logger.rmi.server.EventLoggerServerImpl;
 
 import java.util.Arrays;
 import java.util.Map;
@@ -12,7 +12,7 @@ import java.util.Map;
 public class EventLoggerServerMain {
 
     /**
-     * Starts a new EventLoggerServer, this is not required since the {@link ar.edu.unrc.dc.event_logger.rmi.client.EventLoggerClient} is able to start a server if one is not found.
+     * Starts a new EventLoggerServer, this is not required since the {@link EventLoggerClient} is able to start a server if one is not found.
      * One can also use this to get information about properties and usage.
      * @param args : arguments, these can be either {@code "--help"} or {@code --start}.
      */

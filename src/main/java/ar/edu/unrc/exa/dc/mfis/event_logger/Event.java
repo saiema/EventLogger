@@ -1,7 +1,7 @@
-package ar.edu.unrc.dc.event_logger;
+package ar.edu.unrc.exa.dc.mfis.event_logger;
 
-import ar.edu.unrc.dc.event_logger.text_diff.TextDiffUtils;
-import ar.edu.unrc.dc.event_logger.timing.TimeCounter;
+import ar.edu.unrc.exa.dc.mfis.event_logger.text_diff.TextDiffUtils;
+import ar.edu.unrc.exa.dc.mfis.event_logger.timing.TimeCounter;
 
 import java.time.Instant;
 import java.util.Optional;

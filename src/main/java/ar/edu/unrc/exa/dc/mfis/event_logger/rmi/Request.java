@@ -1,8 +1,8 @@
-package ar.edu.unrc.dc.event_logger.rmi;
+package ar.edu.unrc.exa.dc.mfis.event_logger.rmi;
 
 import java.io.Serializable;
 
-import static ar.edu.unrc.dc.event_logger.rmi.Request.RequestType.*;
+import static ar.edu.unrc.exa.dc.mfis.event_logger.rmi.Request.RequestType.*;
 
 public class Request implements Serializable {
 

@@ -1,16 +1,21 @@
-package ar.edu.unrc.dc.event_logger.rmi.server;
+package ar.edu.unrc.exa.dc.mfis.event_logger.rmi.server;
 
-import ar.edu.unrc.dc.event_logger.Event;
-import ar.edu.unrc.dc.event_logger.EventLogger;
-import ar.edu.unrc.dc.event_logger.LocalLogging;
-import ar.edu.unrc.dc.event_logger.properties.EventLoggerProperties;
-import ar.edu.unrc.dc.event_logger.rmi.Request;
-import ar.edu.unrc.dc.event_logger.rmi.Response;
+import ar.edu.unrc.exa.dc.mfis.event_logger.Event;
+import ar.edu.unrc.exa.dc.mfis.event_logger.EventLogger;
+import ar.edu.unrc.exa.dc.mfis.event_logger.EventLoggerServerMain;
+import ar.edu.unrc.exa.dc.mfis.event_logger.LocalLogging;
+import ar.edu.unrc.exa.dc.mfis.event_logger.properties.EventLoggerProperties;
+import ar.edu.unrc.exa.dc.mfis.event_logger.rmi.Request;
+import ar.edu.unrc.exa.dc.mfis.event_logger.rmi.Response;
 
+import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.net.URL;
 import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
+import java.security.Policy;
+import java.util.Enumeration;
 import java.util.Optional;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -175,6 +180,13 @@ public class EventLoggerServerImpl implements EventLoggerServer{
 
     public static void main(String[] args) {
         if (System.getSecurityManager() == null) {
+            URL policyPath = EventLoggerServerMain.class.getClassLoader().getResource(EventLoggerProperties.serverPolicy());
+            if (policyPath == null) {
+                logger.severe("No policy could be found at " + EventLoggerProperties.serverPolicy());
+                throw new RuntimeException("No policy could be found at " + EventLoggerProperties.serverPolicy());
+            }
+            System.setProperty("java.security.policy", policyPath.toString());
+            Policy.getPolicy().refresh();
             System.setSecurityManager(new SecurityManager());
         }
         logger.info("Starting server");

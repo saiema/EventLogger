@@ -1,9 +1,9 @@
-package ar.edu.unrc.dc.event_logger;
+package ar.edu.unrc.exa.dc.mfis.event_logger;
 
 
-import ar.edu.unrc.dc.event_logger.rmi.Request;
-import ar.edu.unrc.dc.event_logger.rmi.Response;
-import ar.edu.unrc.dc.event_logger.rmi.client.EventLoggerClient;
+import ar.edu.unrc.exa.dc.mfis.event_logger.rmi.Request;
+import ar.edu.unrc.exa.dc.mfis.event_logger.rmi.Response;
+import ar.edu.unrc.exa.dc.mfis.event_logger.rmi.client.EventLoggerClient;
 
 public class TestFirstClient implements Runnable {
 

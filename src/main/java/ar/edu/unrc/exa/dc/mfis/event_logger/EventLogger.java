@@ -1,6 +1,6 @@
-package ar.edu.unrc.dc.event_logger;
+package ar.edu.unrc.exa.dc.mfis.event_logger;
 
-import ar.edu.unrc.dc.event_logger.properties.EventLoggerProperties;
+import ar.edu.unrc.exa.dc.mfis.event_logger.properties.EventLoggerProperties;
 
 import java.util.*;
 import java.util.stream.Collectors;

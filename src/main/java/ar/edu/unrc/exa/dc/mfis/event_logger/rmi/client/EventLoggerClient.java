@@ -1,17 +1,21 @@
-package ar.edu.unrc.dc.event_logger.rmi.client;
+package ar.edu.unrc.exa.dc.mfis.event_logger.rmi.client;
 
-import ar.edu.unrc.dc.event_logger.EventLogger;
-import ar.edu.unrc.dc.event_logger.LocalLogging;
-import ar.edu.unrc.dc.event_logger.properties.EventLoggerProperties;
-import ar.edu.unrc.dc.event_logger.rmi.Request;
-import ar.edu.unrc.dc.event_logger.rmi.Response;
-import ar.edu.unrc.dc.event_logger.rmi.server.EventLoggerServer;
-import ar.edu.unrc.dc.event_logger.rmi.server.EventLoggerServerImpl;
+import ar.edu.unrc.exa.dc.mfis.event_logger.EventLogger;
+import ar.edu.unrc.exa.dc.mfis.event_logger.EventLoggerServerMain;
+import ar.edu.unrc.exa.dc.mfis.event_logger.LocalLogging;
+import ar.edu.unrc.exa.dc.mfis.event_logger.properties.EventLoggerProperties;
+import ar.edu.unrc.exa.dc.mfis.event_logger.rmi.Request;
+import ar.edu.unrc.exa.dc.mfis.event_logger.rmi.Response;
+import ar.edu.unrc.exa.dc.mfis.event_logger.rmi.server.EventLoggerServer;
+import ar.edu.unrc.exa.dc.mfis.event_logger.rmi.server.EventLoggerServerImpl;
+import com.sun.jndi.toolkit.url.Uri;
 
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.net.URISyntaxException;
+import java.net.URL;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.rmi.ConnectException;
@@ -19,7 +23,9 @@ import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
+import java.security.Policy;
 import java.util.Arrays;
+import java.util.Enumeration;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -39,6 +45,13 @@ public class EventLoggerClient {
 
     private EventLoggerClient(String serverURL) {
         if (System.getSecurityManager() == null) {
+            URL policyPath = EventLoggerServerMain.class.getClassLoader().getResource(EventLoggerProperties.clientPolicy());
+            if (policyPath == null) {
+                logger.severe("No policy could be found at " + EventLoggerProperties.clientPolicy());
+                throw new RuntimeException("No policy could be found at " + EventLoggerProperties.clientPolicy());
+            }
+            System.setProperty("java.security.policy", policyPath.toString());
+            Policy.getPolicy().refresh();
             System.setSecurityManager(new SecurityManager());
         }
         try {
@@ -94,12 +107,12 @@ public class EventLoggerClient {
                 eventLoggerServer = lookupServer(registry);
                 logger.info("Got server after " +  currentRetries + " retries " +  eventLoggerServer);
                 return eventLoggerServer;
-            } catch (NotBoundException e) {
+            } catch (NotBoundException | ConnectException e) {
                 if (retries == 0) {
                     logger.log(Level.SEVERE,"Error while retrying a server lookup\n", e);
                     throw new RuntimeException(e);
                 }
-                logger.warning("Server lookup fail, retrying in " + (delaySeconds*1000) + ", retries left " + retries);
+                logger.warning("Server lookup fail, retrying in " + delaySeconds + "s, retries left " + retries);
                 wait(delaySeconds*1000);
             }
         } while (currentRetries++ <= retries);
@@ -130,12 +143,11 @@ public class EventLoggerClient {
 
     private String[] getServerArguments() {
         String[] properties = EventLoggerProperties.asArgs();
-        String[] args = new String[properties.length + 5];
+        String[] args = new String[properties.length + 4];
         args[0] = "java";
         args[1] = "-cp";
         args[2] = System.getProperty("java.class.path");
-        args[3] = "-Djava.security.policy=" + EventLoggerProperties.serverPolicy();
-        int idx = 4;
+        int idx = 3;
         for (String property : properties) {
             args[idx++] = property;
         }

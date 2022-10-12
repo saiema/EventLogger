@@ -1,7 +1,7 @@
-package ar.edu.unrc.dc.event_logger.rmi.server;
+package ar.edu.unrc.exa.dc.mfis.event_logger.rmi.server;
 
-import ar.edu.unrc.dc.event_logger.rmi.Request;
-import ar.edu.unrc.dc.event_logger.rmi.Response;
+import ar.edu.unrc.exa.dc.mfis.event_logger.rmi.Request;
+import ar.edu.unrc.exa.dc.mfis.event_logger.rmi.Response;
 
 import java.rmi.Remote;
 import java.rmi.RemoteException;

@@ -1,4 +1,4 @@
-package ar.edu.unrc.dc.event_logger.text_diff;
+package ar.edu.unrc.exa.dc.mfis.event_logger.text_diff;
 
 import com.github.difflib.text.DiffRow;
 import com.github.difflib.text.DiffRowGenerator;

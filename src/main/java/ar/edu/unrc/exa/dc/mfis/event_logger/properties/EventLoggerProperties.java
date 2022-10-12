@@ -1,10 +1,10 @@
-package ar.edu.unrc.dc.event_logger.properties;
+package ar.edu.unrc.exa.dc.mfis.event_logger.properties;
 
 import java.util.Arrays;
 import java.util.Map;
 import java.util.TreeMap;
 
-import static ar.edu.unrc.dc.event_logger.properties.EventLoggerProperties.ConfigKey.*;
+import static ar.edu.unrc.exa.dc.mfis.event_logger.properties.EventLoggerProperties.ConfigKey.*;
 
 public class EventLoggerProperties {
 
@@ -17,11 +17,13 @@ public class EventLoggerProperties {
     private static final long RMI_CLIENT_CONNECTION_RETRY_DELAY_DEFAULT = 2;
     private static final boolean PROPERTIES_USE_DEFAULT_ON_INVALID_VALUE_DEFAULT = true;
 
-    private static final String RMI_CLIENT_SECURITY_POLICY_DEFAULT = "src/main/resources/eventloggerclient.policy";
+    private static final String RMI_CLIENT_SECURITY_POLICY_DEFAULT = "resources/eventloggerclient.policy";
 
-    private static final String RMI_SERVER_SECURITY_POLICY_DEFAULT = "src/main/resources/eventloggerserver.policy";
+    private static final String RMI_SERVER_SECURITY_POLICY_DEFAULT = "resources/eventloggerserver.policy";
 
     private static final String MAIN_EVENT_DEFAULT_NAME = "MAIN";
+
+    private static final boolean RUNTIME_LOGGING_CONSOLE_OUTPUT_DEFAULT = true;
 
     private static boolean properties_use_default_on_invalid_value = Boolean.parseBoolean(
             getPropertyValue(
@@ -131,6 +133,15 @@ public class EventLoggerProperties {
             public String getDescription() {
                 return "The policy file to use by the server, default value is " + RMI_SERVER_SECURITY_POLICY_DEFAULT;
             }
+        },
+        EVENT_LOGGER_RUNTIME_LOGGING_CONSOLE_OUTPUT {
+            @Override
+            public String getKey() { return EVENT_LOGGER_PREFIX + ".runtime_logging.console_output"; }
+
+            @Override
+            public String getDescription() {
+                return "Enable/Disable runtime logging console output, this will not disable log files, default value is " + RUNTIME_LOGGING_CONSOLE_OUTPUT_DEFAULT;
+            }
         }
         ;
         public abstract String getKey();
@@ -182,6 +193,11 @@ public class EventLoggerProperties {
         return numberPropertyValue(EVENT_LOGGER_CLIENT_CONNECTION_RETRY_DELAY, reconnectionDelayStringValue, RMI_CLIENT_CONNECTION_RETRY_DELAY_DEFAULT);
     }
 
+    public static boolean runtimeLoggingConsoleOutput() {
+        String runtimeLoggingConsoleOutput = getPropertyValue(EVENT_LOGGER_RUNTIME_LOGGING_CONSOLE_OUTPUT, String.valueOf(RUNTIME_LOGGING_CONSOLE_OUTPUT_DEFAULT));
+        return Boolean.parseBoolean(runtimeLoggingConsoleOutput);
+    }
+
     public static Map<String, String> getOptionsAndDescriptions() {
         Map<String, String> optionsAndDescriptions = new TreeMap<>();
         for (ConfigKey configKey : ConfigKey.values()) {
@@ -191,7 +207,7 @@ public class EventLoggerProperties {
     }
 
     public static String[] asArgs() {
-        String[] args = new String[values().length-1];
+        String[] args = new String[ConfigKey.values().length-1];
         int idx = 0;
         for (ConfigKey key : ConfigKey.values()) {
             if (key.equals(EVENT_LOGGER_PROPERTIES_USE_DEFAULT_ON_INVALID_VALUE))
@@ -206,12 +222,16 @@ public class EventLoggerProperties {
         boolean previousValue = properties_use_default_on_invalid_value;
         properties_use_default_on_invalid_value = true;
         switch (key) {
-            case EVENT_LOGGER_NAMING_CONVENTION : {value = namingConvention().toString(); break; }
-            case EVENT_LOGGER_RMI_REGISTRY_PORT : {value = String.valueOf(registryPort()); break; }
-            case EVENT_LOGGER_RMI_PORT : {value = String.valueOf(port()); break; }
-            case EVENT_LOGGER_SERVER_URL : {value = serverURL(); break; }
-            case EVENT_LOGGER_CLIENT_CONNECTION_RETRIES : {value = String.valueOf(connectionRetries()); break; }
-            case EVENT_LOGGER_CLIENT_CONNECTION_RETRY_DELAY : {value = String.valueOf(reconnectionDelay()); break; }
+            case EVENT_LOGGER_NAMING_CONVENTION : { value = namingConvention().toString(); break; }
+            case EVENT_LOGGER_RMI_REGISTRY_PORT : { value = String.valueOf(registryPort()); break; }
+            case EVENT_LOGGER_RMI_PORT : { value = String.valueOf(port()); break; }
+            case EVENT_LOGGER_SERVER_URL : { value = serverURL(); break; }
+            case EVENT_LOGGER_CLIENT_CONNECTION_RETRIES : { value = String.valueOf(connectionRetries()); break; }
+            case EVENT_LOGGER_CLIENT_CONNECTION_RETRY_DELAY : { value = String.valueOf(reconnectionDelay()); break; }
+            case EVENT_LOGGER_MAIN_EVENT_DEFAULT_NAME: { value = String.valueOf(defaultMainEventName()); break; }
+            case EVENT_LOGGER_RMI_CLIENT_POLICY : { value = clientPolicy(); break; }
+            case EVENT_LOGGER_RMI_SERVER_POLICY : { value = serverPolicy(); break; }
+            case EVENT_LOGGER_RUNTIME_LOGGING_CONSOLE_OUTPUT : { value = String.valueOf(runtimeLoggingConsoleOutput()); break; }
             default: throw new IllegalArgumentException("Config key " + key + " is not valid");
         }
         properties_use_default_on_invalid_value = previousValue;
@@ -265,6 +285,11 @@ public class EventLoggerProperties {
             case EVENT_LOGGER_CLIENT_CONNECTION_RETRIES :
             case EVENT_LOGGER_CLIENT_CONNECTION_RETRY_DELAY :
                 return isNumber(value);
+            case EVENT_LOGGER_MAIN_EVENT_DEFAULT_NAME :
+            case EVENT_LOGGER_RMI_CLIENT_POLICY :
+            case EVENT_LOGGER_RMI_SERVER_POLICY :
+            case EVENT_LOGGER_RUNTIME_LOGGING_CONSOLE_OUTPUT :
+            case EVENT_LOGGER_PROPERTIES_USE_DEFAULT_ON_INVALID_VALUE :
             case EVENT_LOGGER_SERVER_URL : return !value.isEmpty();
         }
         return false;
