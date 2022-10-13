@@ -109,11 +109,11 @@ public class EventLoggerClient {
                     logger.log(Level.SEVERE,"Error while retrying a server lookup\n", e);
                     throw new RuntimeException(e);
                 }
-                logger.warning("Server lookup fail, retrying in " + delaySeconds + "s, retries left " + retries);
+                logger.warning("Server lookup fail, retrying in " + delaySeconds + "s, retries left " + (retries - currentRetries));
                 wait(delaySeconds*1000);
             }
         } while (currentRetries++ <= retries);
-        return null; //should never reach this statement
+        throw new IllegalStateException("Could not get a server");
     }
 
     private EventLoggerServer lookupServer(Registry registry) throws NotBoundException, RemoteException {

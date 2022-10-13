@@ -16,7 +16,7 @@ public class LocalLogging {
             Arrays.stream(handlers).forEach(logger::removeHandler);
             //Assigning handlers to LOGGER object
             logger.addHandler(new CoolConsoleHandler());
-            FileHandler fileHandler = new FileHandler("./logs/" + forClass.getName() +  ".log");
+            FileHandler fileHandler = new FileHandler("logs/" + forClass.getName() +  ".log");
             logger.addHandler(fileHandler);
             //Setting levels to handlers and LOGGER
             logger.setLevel(loggingLevel);
