@@ -256,7 +256,7 @@ public class Response implements Serializable {
         }
         sb.append(",\n");
         sb.append("\t\"booleanData\":").append("\"").append(booleanData).append("\"").append(",\n");
-        sb.append("\t\"from\": {\n").append(
+        sb.append("\t\"from\": {\n").append("\"request\":").append(
                 Arrays.stream(from.toString().split("\n")).map(s -> "\t" + s + "\n").collect(Collectors.joining())
         ).append("\n\t}\n");
         sb.append("}");
