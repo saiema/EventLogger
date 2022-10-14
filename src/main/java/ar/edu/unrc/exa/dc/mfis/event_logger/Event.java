@@ -105,10 +105,10 @@ public class Event {
     @Override
     public String toString() {
          StringBuilder sb = new StringBuilder("{\n");
-         sb.append("\tname=").append(name).append(",\n");
-         sb.append("\ttimestamp=").append(timestamp.toString()).append(",\n");
-         sb.append("\tstartingTime(s)=").append(initialTimeInSeconds).append(",\n");
-         sb.append("\tstatus=");
+         sb.append("\t\"name\":").append("\"").append(name).append("\"").append(",\n");
+         sb.append("\t\"timestamp\":").append("\"").append(timestamp.toString()).append("\"").append(",\n");
+         sb.append("\t\"startingTime(s)\":").append("\"").append(initialTimeInSeconds).append("\"").append(",\n");
+         sb.append("\t\"status\":").append("\"");
          if (isInstantEvent) {
              sb.append("INSTANT");
          } else if (started && running) {
@@ -118,19 +118,20 @@ public class Event {
          } else {
              sb.append("NOT YET STARTED");
          }
-         sb.append(",\n");
-         sb.append("\telapsedTime(s)=");
+         sb.append("\"").append(",\n");
+         sb.append("\t\"elapsedTime(s)\":").append("\"");
          if (isInstantEvent)
-             sb.append("INSTANT\n");
+             sb.append("INSTANT").append("\"");
          else
-             sb.append(elapsedSeconds()).append(",\n");
-         sb.append("\thasStartingData=").append(associatedStartingData().isPresent()).append(",\n");
-         sb.append("\thasEndingData=").append(associatedEndingData().isPresent());
+             sb.append(elapsedSeconds()).append("\"");
+         sb.append(",\n");
+         sb.append("\t\"hasStartingData\":").append("\"").append(associatedStartingData().isPresent()).append("\"").append(",\n");
+         sb.append("\t\"hasEndingData\":").append("\"").append(associatedEndingData().isPresent()).append("\"");
          if (associatedStartingData().isPresent() || associatedEndingData().isPresent())
              sb.append(",");
          sb.append("\n");
          if (associatedStartingData().isPresent()) {
-             sb.append("\tstartingData=")
+             sb.append("\t\"startingData\":")
                      .append("\"")
                      .append(associatedStartingData)
                      .append("\"");
@@ -139,7 +140,7 @@ public class Event {
              sb.append("\n");
          }
          if (associatedEndingData().isPresent()) {
-             sb.append("\tendingData=")
+             sb.append("\t\"endingData\":")
                      .append("\"")
                      .append(associatedEndingData)
                      .append("\"");
@@ -148,7 +149,7 @@ public class Event {
              sb.append("\n");
          }
          if (associatedStartingData().isPresent() && associatedEndingData().isPresent()) {
-             sb.append("\tdataDifference=")
+             sb.append("\t\"dataDifference\":")
                      .append("\"")
                      .append(TextDiffUtils.diff(associatedStartingData, associatedEndingData))
                      .append("\"").append("\n");

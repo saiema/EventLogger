@@ -117,25 +117,25 @@ public class Request implements Serializable {
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder("{\n");
-        sb.append("\ttype=").append(requestType.toString()).append(",\n");
-        sb.append("\tname=");
+        sb.append("\t\"type\":").append("\"").append(requestType.toString()).append("\"").append(",\n");
+        sb.append("\t\"name\":");
         if (hasName())
-            sb.append(name);
+            sb.append("\"").append(name).append("\"");
         else
-            sb.append("N/A");
+            sb.append("\"").append("N/A").append("\"");
         sb.append(",\n");
-        sb.append("\tinitialData=");
+        sb.append("\t\"initialData\":");
         if (hasInitialData()) {
-            sb.append(initialData);
+            sb.append("\"").append(initialData).append("\"");
         } else {
-            sb.append("N/A");
+            sb.append("\"").append("N/A").append("\"");
         }
         sb.append(",\n");
-        sb.append("\tfinalData=");
+        sb.append("\t\"finalData\":");
         if (hasFinalData()) {
-            sb.append(finalData);
+            sb.append("\"").append(finalData).append("\"");
         } else {
-            sb.append("N/A");
+            sb.append("\"").append("N/A").append("\"");
         }
         sb.append("\n");
         sb.append("}");

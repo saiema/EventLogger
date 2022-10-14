@@ -1,7 +1,9 @@
 package ar.edu.unrc.exa.dc.mfis.event_logger.rmi;
 
 import java.io.Serializable;
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static ar.edu.unrc.exa.dc.mfis.event_logger.rmi.Response.ResponseType.*;
 
@@ -237,22 +239,26 @@ public class Response implements Serializable {
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder("{\n");
-        sb.append("\ttype=").append(responseType.toString()).append(",\n");
-        sb.append("\tsimpleTextData=");
+        sb.append("\t\"type\":").append("\"").append(responseType.toString()).append("\"").append(",\n");
+        sb.append("\t\"simpleTextData\":");
         if (hasSimpleTextData())
-            sb.append(simpleTextData);
+            sb.append("\"").append(simpleTextData).append("\"");
         else
-            sb.append("N/A");
+            sb.append("\"").append("N/A").append("\"");
         sb.append(",\n");
-        sb.append("\tmultipleTextData=");
+        sb.append("\t\"multipleTextData\":");
         if (hasMultiTextData()) {
-            sb.append(String.join(",", multipleTextData));
+            sb.append("[");
+            sb.append(multipleTextData.stream().map(e -> "\"" + e + "\"").collect(Collectors.joining(",")));
+            sb.append("]");
         } else {
-            sb.append("N/A");
+            sb.append("\"").append("N/A").append("\"");
         }
         sb.append(",\n");
-        sb.append("\tbooleanData=").append(booleanData).append(",\n");
-        sb.append("\tfrom=\n").append(from.toString()).append("\n");
+        sb.append("\t\"booleanData\":").append("\"").append(booleanData).append("\"").append(",\n");
+        sb.append("\t\"from\": {\n").append(
+                Arrays.stream(from.toString().split("\n")).map(s -> "\t" + s + "\n").collect(Collectors.joining())
+        ).append("\n\t}\n");
         sb.append("}");
         return sb.toString();
     }
