@@ -21,6 +21,8 @@ public class EventLoggerProperties {
 
     private static final String RMI_SERVER_SECURITY_POLICY_DEFAULT = "resources/eventloggerserver.policy";
 
+    private static final boolean RMI_SECURITY_ENABLE_DEFAULT = false;
+
     private static final String MAIN_EVENT_DEFAULT_NAME = "MAIN";
 
     private static final boolean RUNTIME_LOGGING_CONSOLE_OUTPUT_DEFAULT = true;
@@ -142,6 +144,15 @@ public class EventLoggerProperties {
             public String getDescription() {
                 return "Enable/Disable runtime logging console output, this will not disable log files, default value is " + RUNTIME_LOGGING_CONSOLE_OUTPUT_DEFAULT;
             }
+        },
+        EVENT_LOGGER_SECURITY_MANAGER_ENABLE {
+            @Override
+            public String getKey() { return EVENT_LOGGER_PREFIX + ".security_manager_enable"; }
+
+            @Override
+            public String getDescription() {
+                return "Enable/Disable usage of a Security Manager, default value is " + RMI_SECURITY_ENABLE_DEFAULT;
+            }
         }
         ;
         public abstract String getKey();
@@ -198,6 +209,11 @@ public class EventLoggerProperties {
         return Boolean.parseBoolean(runtimeLoggingConsoleOutput);
     }
 
+    public static boolean securityManagerEnabled() {
+        String securityManagerEnabled = getPropertyValue(EVENT_LOGGER_SECURITY_MANAGER_ENABLE, String.valueOf(RMI_SECURITY_ENABLE_DEFAULT));
+        return Boolean.parseBoolean(securityManagerEnabled);
+    }
+
     public static Map<String, String> getOptionsAndDescriptions() {
         Map<String, String> optionsAndDescriptions = new TreeMap<>();
         for (ConfigKey configKey : ConfigKey.values()) {
@@ -231,6 +247,7 @@ public class EventLoggerProperties {
             case EVENT_LOGGER_MAIN_EVENT_DEFAULT_NAME: { value = String.valueOf(defaultMainEventName()); break; }
             case EVENT_LOGGER_RMI_CLIENT_POLICY : { value = clientPolicy(); break; }
             case EVENT_LOGGER_RMI_SERVER_POLICY : { value = serverPolicy(); break; }
+            case EVENT_LOGGER_SECURITY_MANAGER_ENABLE : { value = String.valueOf(securityManagerEnabled()); break; }
             case EVENT_LOGGER_RUNTIME_LOGGING_CONSOLE_OUTPUT : { value = String.valueOf(runtimeLoggingConsoleOutput()); break; }
             default: throw new IllegalArgumentException("Config key " + key + " is not valid");
         }
@@ -290,6 +307,7 @@ public class EventLoggerProperties {
             case EVENT_LOGGER_RMI_SERVER_POLICY :
             case EVENT_LOGGER_RUNTIME_LOGGING_CONSOLE_OUTPUT :
             case EVENT_LOGGER_PROPERTIES_USE_DEFAULT_ON_INVALID_VALUE :
+            case EVENT_LOGGER_SECURITY_MANAGER_ENABLE :
             case EVENT_LOGGER_SERVER_URL : return !value.isEmpty();
         }
         return false;

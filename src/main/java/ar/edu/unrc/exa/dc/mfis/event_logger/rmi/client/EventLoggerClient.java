@@ -41,15 +41,17 @@ public class EventLoggerClient {
     }
 
     private EventLoggerClient(String serverURL) {
-        if (System.getSecurityManager() == null) {
-            URL policyPath = EventLoggerServerMain.class.getClassLoader().getResource(EventLoggerProperties.clientPolicy());
-            if (policyPath == null) {
-                logger.severe("No policy could be found at " + EventLoggerProperties.clientPolicy());
-                throw new RuntimeException("No policy could be found at " + EventLoggerProperties.clientPolicy());
+        if (EventLoggerProperties.securityManagerEnabled()) {
+            if (System.getSecurityManager() == null) {
+                URL policyPath = EventLoggerServerMain.class.getClassLoader().getResource(EventLoggerProperties.clientPolicy());
+                if (policyPath == null) {
+                    logger.severe("No policy could be found at " + EventLoggerProperties.clientPolicy());
+                    throw new RuntimeException("No policy could be found at " + EventLoggerProperties.clientPolicy());
+                }
+                System.setProperty("java.security.policy", policyPath.toString());
+                Policy.getPolicy().refresh();
+                System.setSecurityManager(new SecurityManager());
             }
-            System.setProperty("java.security.policy", policyPath.toString());
-            Policy.getPolicy().refresh();
-            System.setSecurityManager(new SecurityManager());
         }
         try {
             eventLoggerServer = getServer(serverURL);

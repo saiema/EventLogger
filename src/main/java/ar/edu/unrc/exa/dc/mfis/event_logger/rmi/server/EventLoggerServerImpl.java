@@ -179,15 +179,17 @@ public class EventLoggerServerImpl implements EventLoggerServer{
     }
 
     public static void main(String[] args) {
-        if (System.getSecurityManager() == null) {
-            URL policyPath = EventLoggerServerMain.class.getClassLoader().getResource(EventLoggerProperties.serverPolicy());
-            if (policyPath == null) {
-                logger.severe("No policy could be found at " + EventLoggerProperties.serverPolicy());
-                throw new RuntimeException("No policy could be found at " + EventLoggerProperties.serverPolicy());
+        if (EventLoggerProperties.securityManagerEnabled()) {
+            if (System.getSecurityManager() == null) {
+                URL policyPath = EventLoggerServerMain.class.getClassLoader().getResource(EventLoggerProperties.serverPolicy());
+                if (policyPath == null) {
+                    logger.severe("No policy could be found at " + EventLoggerProperties.serverPolicy());
+                    throw new RuntimeException("No policy could be found at " + EventLoggerProperties.serverPolicy());
+                }
+                System.setProperty("java.security.policy", policyPath.toString());
+                Policy.getPolicy().refresh();
+                System.setSecurityManager(new SecurityManager());
             }
-            System.setProperty("java.security.policy", policyPath.toString());
-            Policy.getPolicy().refresh();
-            System.setSecurityManager(new SecurityManager());
         }
         logger.info("Starting server");
         try {
