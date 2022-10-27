@@ -38,13 +38,13 @@ public class Event {
 
     public void instantEvent(String associatedStartingData) {
         instantEvent();
-        this.associatedStartingData = associatedStartingData;
+        setInitialData(associatedStartingData);
     }
 
     public void instantEvent(String associatedStartingData, String associatedEndingData) {
         instantEvent();
-        this.associatedStartingData = associatedStartingData;
-        this.associatedEndingData = associatedEndingData;
+        setInitialData(associatedStartingData);
+        setFinalData(associatedEndingData);
     }
 
     public void startEvent() {
@@ -57,7 +57,7 @@ public class Event {
 
     public void starEvent(String associatedStartingData) {
         startEvent();
-        this.associatedStartingData = associatedStartingData;
+        setInitialData(associatedStartingData);
     }
 
     public void stopEvent() {
@@ -68,7 +68,7 @@ public class Event {
     }
 
     public void stopEvent(String associatedEndingData) {
-        this.associatedEndingData = associatedEndingData;
+        setFinalData(associatedEndingData);
         stopEvent();
     }
 
@@ -100,6 +100,22 @@ public class Event {
 
     public boolean isRunning() {
         return running;
+    }
+
+    private void setInitialData(String rawData) {
+        this.associatedStartingData = cleanStringData(rawData);
+    }
+
+    private void setFinalData(String rawData) {
+        this.associatedEndingData = cleanStringData(rawData);
+    }
+
+    private String cleanStringData(String rawData) {
+        if (rawData == null) return null;
+        String cleanedString = rawData;
+        cleanedString = cleanedString.replaceAll("\\n", "\\\\n");
+        cleanedString = cleanedString.replaceAll("\\r", "\\\\r");
+        return cleanedString;
     }
 
     @Override
