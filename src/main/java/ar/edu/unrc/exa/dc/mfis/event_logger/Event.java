@@ -115,6 +115,7 @@ public class Event {
         String cleanedString = rawData;
         cleanedString = cleanedString.replaceAll("\\n", "\\\\n");
         cleanedString = cleanedString.replaceAll("\\r", "\\\\r");
+        cleanedString = cleanedString.replaceAll("\"", "\\\\\"");
         return cleanedString;
     }
 

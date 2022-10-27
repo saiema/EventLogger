@@ -24,7 +24,7 @@ public class TestFirstClient implements Runnable {
         doRequest(Request.startEvent("thirdEvent", "Juan José Loles\nY esta es una segunda línea"));
         waitFor(15700);
         doRequest(Request.queryEventInformation("thirdEvent"));
-        doRequest(Request.stopEvent("firstEvent", " y te agregué esto"));
+        doRequest(Request.stopEvent("firstEvent", " y te agregué\" esto"));
         doRequest(Request.stopEvent("thirdEvent", ""));
         doRequest(Request.stopMainEvent());
         doRequest(Request.queryAllEventsInformation());
