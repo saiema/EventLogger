@@ -53,6 +53,10 @@ public class EventLogger {
     }
 
     public void startInstantEvent(String name, String initialData, String finalData) {
+        startInstantEvent(name, initialData, finalData, true);
+    }
+
+    public void startInstantEvent(String name, String initialData, String finalData, boolean calculateDifference) {
         if (events.containsKey(name))
             throw new IllegalStateException("There is already an event with name " + name);
         double startingTime = 0;
@@ -60,6 +64,7 @@ public class EventLogger {
             startingTime = mainEvent.elapsedSeconds();
         }
         Event event = new Event(name, startingTime);
+        event.calculateDifference(calculateDifference);
         if (initialData == null) {
             event.instantEvent();
         } else if (finalData == null) {

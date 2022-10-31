@@ -107,14 +107,14 @@ public class EventLoggerClient {
                 logger.info("Got server after " +  currentRetries + " retries " +  eventLoggerServer);
                 return eventLoggerServer;
             } catch (NotBoundException | ConnectException e) {
-                if (retries == 0) {
+                if (retries == currentRetries) {
                     logger.log(Level.SEVERE,"Error while retrying a server lookup\n", e);
                     throw new RuntimeException(e);
                 }
                 logger.warning("Server lookup fail, retrying in " + delaySeconds + "s, retries left " + (retries - currentRetries));
                 wait(delaySeconds*1000);
             }
-        } while (currentRetries++ <= retries);
+        } while (currentRetries++ < retries);
         throw new IllegalStateException("Could not get a server");
     }
 

@@ -66,7 +66,7 @@ public class EventLoggerServerImpl implements EventLoggerServer{
                     }
                     if (request.requestType().equals(Request.RequestType.START_INSTANT_EVENT)) {
                         logger.info("Started instant event (" + request.name() + ")");
-                        eventLogger.startInstantEvent(request.name(), request.initialData(), request.finalData());
+                        eventLogger.startInstantEvent(request.name(), request.initialData(), request.finalData(), request.calculateDifference());
                     } else {
                         logger.info("Started event (" + request.name() + ")");
                         eventLogger.startEvent(request.name(), request.initialData());
@@ -173,7 +173,7 @@ public class EventLoggerServerImpl implements EventLoggerServer{
             logger.warning("Trying to stop an event ( " +  request.name() + " ) that has already been stopped, sending an ERROR response");
             return Response.error("Event " + event.name() + " is already stopped", request);
         }
-        event.stopEvent(request.initialData());
+        event.stopEvent(request.initialData(), request.calculateDifference());
         logger.info("Event (" + request.name() + ") has been successfully stopped");
         return Response.eventStartedStopped(request);
     }

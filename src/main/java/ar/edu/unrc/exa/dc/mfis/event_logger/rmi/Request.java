@@ -22,12 +22,18 @@ public class Request implements Serializable {
     private final String name;
     private final String initialData;
     private final String finalData;
+    private final boolean calculateDifference;
     private final RequestType requestType;
 
     private Request(String name, String initialData, String finalData, RequestType requestType) {
+        this(name, initialData, finalData, true, requestType);
+    }
+
+    private Request(String name, String initialData, String finalData, boolean calculateDifference, RequestType requestType) {
         this.name = name;
         this.initialData = initialData;
         this.finalData = finalData;
+        this.calculateDifference = calculateDifference;
         this.requestType = requestType;
     }
 
@@ -50,6 +56,8 @@ public class Request implements Serializable {
     }
 
     public String finalData() { return finalData; }
+
+    public boolean calculateDifference() { return calculateDifference; }
 
     public RequestType requestType() {
         return requestType;
@@ -75,7 +83,10 @@ public class Request implements Serializable {
     }
 
     public static Request startInstantEvent(String name, String initialData, String finalData) {
-        return new Request(name, initialData, finalData, START_INSTANT_EVENT);
+        return startInstantEvent(name, initialData, finalData, true);
+    }
+    public static Request startInstantEvent(String name, String initialData, String finalData, boolean calculateDifference) {
+        return new Request(name, initialData, finalData, calculateDifference, START_INSTANT_EVENT);
     }
 
     public static Request startEvent(String name, String data) {
@@ -95,11 +106,19 @@ public class Request implements Serializable {
     }
 
     public static Request stopMainEvent(String data) {
-        return new Request(null, data, null, STOP_MAIN_EVENT);
+        return stopEvent(null, data,true);
+    }
+
+    public static Request stopMainEvent(String data, boolean calculateDifference) {
+        return new Request(null, data,null, calculateDifference, STOP_MAIN_EVENT);
     }
 
     public static Request stopEvent(String name, String data) {
-        return new Request(name, data, null, STOP_EVENT);
+        return stopEvent(name,data,true);
+    }
+
+    public static Request stopEvent(String name, String data, boolean calculateDifference) {
+        return new Request(name, data, null, calculateDifference, STOP_EVENT);
     }
 
     public static Request queryEventInformation(String name) {

@@ -14,6 +14,7 @@ public class Event {
     private final double initialTimeInSeconds;
     private String associatedStartingData = null;
     private String associatedEndingData = null;
+    private boolean calculateDifference = false;
     private boolean isInstantEvent = false;
     private boolean started = false;
     private boolean running = false;
@@ -68,6 +69,11 @@ public class Event {
     }
 
     public void stopEvent(String associatedEndingData) {
+        stopEvent(associatedEndingData, true);
+    }
+
+    public void stopEvent(String associatedEndingData, boolean calculateDifference) {
+        calculateDifference(calculateDifference);
         setFinalData(associatedEndingData);
         stopEvent();
     }
@@ -76,6 +82,10 @@ public class Event {
         if (running)
             timeCounter.updateTotalTime();
         return timeCounter.toSecondsExtended();
+    }
+
+    public void calculateDifference(boolean calculateDifference) {
+        this.calculateDifference = calculateDifference;
     }
 
     public Instant timestamp() {
@@ -161,11 +171,11 @@ public class Event {
                      .append("\"")
                      .append(associatedEndingData)
                      .append("\"");
-             if (associatedStartingData().isPresent())
+             if (calculateDifference && associatedStartingData().isPresent())
                  sb.append(",");
              sb.append("\n");
          }
-         if (associatedStartingData().isPresent() && associatedEndingData().isPresent()) {
+         if (calculateDifference && associatedStartingData().isPresent() && associatedEndingData().isPresent()) {
              sb.append("\t\"dataDifference\":")
                      .append("\"")
                      .append(TextDiffUtils.diff(associatedStartingData, associatedEndingData))
