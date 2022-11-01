@@ -106,7 +106,7 @@ public class Request implements Serializable {
     }
 
     public static Request stopMainEvent(String data) {
-        return stopEvent(null, data,true);
+        return stopMainEvent(data,true);
     }
 
     public static Request stopMainEvent(String data, boolean calculateDifference) {
