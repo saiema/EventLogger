@@ -126,6 +126,9 @@ public class Event {
         cleanedString = cleanedString.replaceAll("\\n", "\\\\n");
         cleanedString = cleanedString.replaceAll("\\r", "\\\\r");
         cleanedString = cleanedString.replaceAll("\"", "\\\\\"");
+        cleanedString = cleanedString.replaceAll("\\t", "\\\\t");
+        cleanedString = cleanedString.replaceAll("\\b", "\\\\b");
+        cleanedString = cleanedString.replaceAll("\\\\", "\\\\\\");
         return cleanedString;
     }
 
