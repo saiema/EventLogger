@@ -2,6 +2,7 @@ package ar.edu.unrc.exa.dc.mfis.event_logger;
 
 import ar.edu.unrc.exa.dc.mfis.event_logger.text_diff.TextDiffUtils;
 import ar.edu.unrc.exa.dc.mfis.event_logger.timing.TimeCounter;
+import org.json.simple.JSONObject;
 
 import java.time.Instant;
 import java.util.Optional;
@@ -122,14 +123,7 @@ public class Event {
 
     private String cleanStringData(String rawData) {
         if (rawData == null) return null;
-        String cleanedString = rawData;
-        cleanedString = cleanedString.replaceAll("\\n", "\\\\n");
-        cleanedString = cleanedString.replaceAll("\\r", "\\\\r");
-        cleanedString = cleanedString.replaceAll("\"", "\\\\\"");
-        cleanedString = cleanedString.replaceAll("\\t", "\\\\t");
-        cleanedString = cleanedString.replaceAll("\\b", "\\\\b");
-        cleanedString = cleanedString.replaceAll("\\\\", "\\\\\\");
-        return cleanedString;
+        return JSONObject.escape(rawData);
     }
 
     @Override
