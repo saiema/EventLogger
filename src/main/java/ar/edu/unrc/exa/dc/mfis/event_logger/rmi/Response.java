@@ -1,5 +1,7 @@
 package ar.edu.unrc.exa.dc.mfis.event_logger.rmi;
 
+import org.json.simple.JSONObject;
+
 import java.io.Serializable;
 import java.util.Arrays;
 import java.util.List;
@@ -242,14 +244,14 @@ public class Response implements Serializable {
         sb.append("\t\"type\":").append("\"").append(responseType.toString()).append("\"").append(",\n");
         sb.append("\t\"simpleTextData\":");
         if (hasSimpleTextData())
-            sb.append("\"").append(simpleTextData).append("\"");
+            sb.append("\"").append(cleanStringData(simpleTextData)).append("\"");
         else
             sb.append("\"").append("N/A").append("\"");
         sb.append(",\n");
         sb.append("\t\"multipleTextData\":");
         if (hasMultiTextData()) {
             sb.append("[");
-            sb.append(multipleTextData.stream().map(e -> "\"" + e + "\"").collect(Collectors.joining(",")));
+            sb.append(multipleTextData.stream().map(e -> "\"" + cleanStringData(e) + "\"").collect(Collectors.joining(",")));
             sb.append("]");
         } else {
             sb.append("\"").append("N/A").append("\"");
@@ -261,6 +263,11 @@ public class Response implements Serializable {
         ).append("\n\t}\n");
         sb.append("}");
         return sb.toString();
+    }
+
+    private String cleanStringData(String rawData) {
+        if (rawData == null) return null;
+        return JSONObject.escape(rawData);
     }
 
 }

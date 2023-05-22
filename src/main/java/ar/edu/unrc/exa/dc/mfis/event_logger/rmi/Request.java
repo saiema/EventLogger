@@ -1,5 +1,7 @@
 package ar.edu.unrc.exa.dc.mfis.event_logger.rmi;
 
+import org.json.simple.JSONObject;
+
 import java.io.Serializable;
 
 import static ar.edu.unrc.exa.dc.mfis.event_logger.rmi.Request.RequestType.*;
@@ -145,20 +147,25 @@ public class Request implements Serializable {
         sb.append(",\n");
         sb.append("\t\"initialData\":");
         if (hasInitialData()) {
-            sb.append("\"").append(initialData).append("\"");
+            sb.append("\"").append(cleanStringData(initialData)).append("\"");
         } else {
             sb.append("\"").append("N/A").append("\"");
         }
         sb.append(",\n");
         sb.append("\t\"finalData\":");
         if (hasFinalData()) {
-            sb.append("\"").append(finalData).append("\"");
+            sb.append("\"").append(cleanStringData(finalData)).append("\"");
         } else {
             sb.append("\"").append("N/A").append("\"");
         }
         sb.append("\n");
         sb.append("}");
         return sb.toString();
+    }
+
+    private String cleanStringData(String rawData) {
+        if (rawData == null) return null;
+        return JSONObject.escape(rawData);
     }
 
 }
